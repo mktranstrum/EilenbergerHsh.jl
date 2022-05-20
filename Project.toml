@@ -1,0 +1,4 @@
+name = "EilenbergerHsh"
+uuid = "afe4c239-5531-4db6-95a0-07140f37968e"
+authors = ["Mark Transtrum <mktranstrum@byu.edu>"]
+version = "0.1.0"
