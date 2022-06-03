@@ -1,5 +1,7 @@
-module EilenbergerHsh
+include("GalerkinBases.jl")
 
-greet() = print("Hello World!")
+include("test.jl")
+
+module EilenbergerHsh
 
 end # module
