@@ -11,7 +11,9 @@ function PCHIPBasis(xknots::AbstractVector)
     D = PCHIPs.D(knots)
     H = PCHIPs.H(knots)
     M = PCHIPs.M(knots)
-    return PCHIPBasis(knots, G, D, H, M)
+    u0 = zeros( 2*length(knots))
+    u0[1] = 1
+    return PCHIPBasis(knots, G, D, H, M, u0)
 end
 
 NDOF(b::PCHIPBasis) = 2*length(b.knots)

@@ -2,3 +2,7 @@ name = "EilenbergerHsh"
 uuid = "afe4c239-5531-4db6-95a0-07140f37968e"
 authors = ["Mark Transtrum <mktranstrum@byu.edu>"]
 version = "0.1.0"
+
+[deps]
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
+NLsolve = "2774e3e8-f4cf-5e23-947b-6d7e65073b56"
