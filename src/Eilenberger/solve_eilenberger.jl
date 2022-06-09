@@ -18,12 +18,12 @@ Solve the Eilenberger equations
 function solve_eilenberger!(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
     update!(Φ, fL_gL(ω, ΔT)...)
     update!(Φ,
-            M(Φ, MΔ, MAy, ω, ny, nz, ΔT) \ collect(B(Φ, MΔ, MAy, ω, ny, nz, ΔT))
+            A(Φ, MΔ, MAy, ω, ny, nz, ΔT) \ collect(B(Φ, MΔ, MAy, ω, ny, nz, ΔT))
             )
     nothing
 end
 
-function M(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
+function A(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
     b = basis(Φ)
     sdof = Φ.sdof
     ddof = Φ.ddof
@@ -45,3 +45,4 @@ function B(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
            -(ω*b.G - im*ny*MAy)[ddof, L]*2*fL + (MΔ)[ddof, L]*2*gL;
             -2*nz*b.D[gdof, L]*gL]
 end
+
