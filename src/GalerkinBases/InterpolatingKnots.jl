@@ -1,5 +1,5 @@
 module InterpolatingKnots
-export Knots, isequel, get_interval
+export Knots, isequel, get_interval, refine_knots
 
 """
 Knots for a interpolating spline
@@ -56,5 +56,17 @@ function get_interval(knots::Knots, x::Real, kl::Integer, ku::Integer)::Integer
         end            
     end    
 end
+
+function refine_knots(x::AbstractVector{Float64}, factor::Integer)::Knots
+    xfine = range(x[1];length = factor+1, stop = x[2]) |> collect
+    for i = 2:length(x)-1
+        xfine = vcat(xfine,
+                 collect(range(x[i], length = factor+1, stop=x[i+1]))[2:end]
+                 )
+    end
+    return Knots(xfine)
+end
+
+refine_knots(knots::Knots, factor::Integer) = refine_knots(knots.x, factor)
 
 end # module

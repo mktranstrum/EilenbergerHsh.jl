@@ -2,7 +2,7 @@ module GalerkinBases
 
 import SparseArrays: sparse, spdiagm
 
-export Knots, NDOF, GalerkinBasis, PCHIPBasis, PCHIP
+export Knots, refine_knots, NDOF, GalerkinBasis, PCHIPBasis, PCHIP
 
 struct GalerkinBasis{T}
     knots

@@ -23,6 +23,17 @@ function solve_eilenberger!(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
     nothing
 end
 
+"""
+Solve the sensitivity Eilenberger equations
+"""
+function solve_eilenberger_sensitivity!(δΦ::ΦDOF{PCHIP}, Φ::ΦDOF{PCHIP}, A, MδΔ, MδAy, ω, ny, nz, ΔT)
+    update!(δΦ, 0, 0)
+    rhs = -δA(Φ, MδΔ, MδAy, ω, ny, nz, Δ) * Φ.dof
+    update!(δΦ, A \ rhs)
+    nothing
+end
+
+
 function A(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
     b = basis(Φ)
     sdof = Φ.sdof
@@ -46,3 +57,13 @@ function B(Φ::ΦDOF{PCHIP}, MΔ, MAy, ω, ny, nz, ΔT)
             -2*nz*b.D[gdof, L]*gL]
 end
 
+
+function δA(Φ::ΦDOF{PCHIP}, MδΔ, MδAy, ω, ny, nz, ΔT)
+    b = basis(Φ)
+    sdof = Φ.sdof
+    ddof = Φ.ddof
+    gdof = Φ.gdof
+    return [  spzeros(sdof, sdof)  (-im*ny*MδAy)[sdof, ddof]  spzeros(sdof, gdof);
+              (-im*ny*MδAy)[ddof, sdof]  spzeros(ddof, ddof)  (-2*MδΔ)[ddof, gdof];
+              spzeros(gdof, sdof)  (-MδΔ)[gdof, ddof]  spzeros(gdof, gdof) ]
+end
