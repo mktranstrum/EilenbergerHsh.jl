@@ -56,8 +56,11 @@ function δΨs(coarseknots::Knots, basis::PCHIPBasis)
     knots = basis.knots
     n = 2*length(coarseknots)
     Δdof = trues(n)
+    Δdof[2] = false # Slope at z = 0
+    Δdof[end-1] = false # Value at z = ∞
     Aydof = trues(n)
-    Aydof[end-1] = false
+    Aydof[2] = false # Applied Field
+    Aydof[end-1] = false # Value zt z = ∞
     PCHIPzero = PCHIP(knots, zeros(2*length(knots)))
 
     return [[ΨDOF(basis, PCHIP(knots, PCHIP(coarseknots, zeros_one(n,i))), PCHIPzero) for i = 1:n if Δdof[i]];
