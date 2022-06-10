@@ -11,18 +11,27 @@ x = knots.x
 xfine = fineknots.x
 
 # Create ΔΨ's
+function zeros_one(n, i)
+    out = zeros(n)
+    out[i] = 1
+    return out
+end
 
-δΔ = PCHIP(coarseknots, zeros(2*length(coarseknots)))
-δΔ.pvalues[3] = 1
-δAy = PCHIP(coarseknots, zeros(2*length(coarseknots)))
+n = 2*length(coarseknots)
+Δdof = trues(n)
+Aydof = trues(n)
+Aydof[n-1] = 0
+PCHIPzero = PCHIP(knots, zeros(2*length(knots)))
+i = 1
 
-δΨ = ΨDOF(basis,
-          PCHIP(knots, δΔ),
-          PCHIP(knots, δAy))
+δΨs = [[ΨDOF(basis, PCHIP(knots, PCHIP(coarseknots, zeros_one(n,i))), PCHIPzero) for i = 1:n if Δdof[i]];
+       [ΨDOF(basis, PCHIPzero, PCHIP(knots, PCHIP(coarseknots, zeros_one(n,i)))) for i = 1:n if Aydof[i]]]
+
+           
 
 
-parameters = EilenbergerParameters(1.0, 0.9)
-parameters.Ha = 0.9 * parameters.Hc
+# parameters = EilenbergerParameters(1.0, 0.9)
+# parameters.Ha = 0.9 * parameters.Hc
 
 # Ψ = ΨDOF(basis, parameters.ΔT)
 # solve!(Ψ, parameters)
