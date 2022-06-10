@@ -32,16 +32,32 @@ mutable struct PCHIP{T}
 end
 
 # Convenience constructor
-function PCHIP(knots::AbstractVector{Float64}, pvalues::Vector{T}, mvalues::Vector{T}) where T
-    return PCHIP(Knots(knots), pvalues, mvalues)
+function PCHIP(x::AbstractVector{Float64}, pvalues::Vector{T}, mvalues::Vector{T}) where T
+    return PCHIP(Knots(x), pvalues, mvalues)
 end
     
-function PCHIP(knots::AbstractVector{Float64}, dofs::Vector{T}) where T
-    return PCHIP(Knots(knots), dofs[1:2:end], dofs[2:2:end])
+function PCHIP(x::AbstractVector{Float64}, dofs::Vector{T}) where T
+    return PCHIP(Knots(x), dofs[1:2:end], dofs[2:2:end])
 end
 
 function PCHIP(knots::Knots, dofs::Vector{T}) where T
     return PCHIP(knots, dofs[1:2:end], dofs[2:2:end])
+end
+
+function PCHIP(knots::Knots, f::Function, df::Function)
+    return PCHIP(knots, f.(knots.x), df.(knots.x))
+end
+
+function PCHIP(x::AbstractVector{Float64}, f::Function, df::Function)
+    return PCHIP(knots(x), f.(x), df.(x))
+end
+
+function PCHIP(knots::Knots, f::PCHIP{T}) where T
+    return PCHIP(knots, f.(knots.x), f.(knots.x, 1))
+end
+
+function PCHIP(x::AbstractVector{Float64}, f::PCHIP{T}) where T
+    return PCHIP(knots(x), f.(x), f.(x, 1))
 end
 
 # Evaluate the spline at x in interval k

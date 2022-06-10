@@ -26,6 +26,14 @@ function ΨDOF(basis::PCHIPBasis, ΔT)
     return ΨDOF{PCHIP}(basis, dof, Aydof)
 end
 
+function ΨDOF(basis::PCHIPBasis, Δ::PCHIP, Ay::PCHIP)
+    Ndof = NDOF(basis)
+    Aydof = trues(Ndof)
+    Aydof[end-1] = false # = 0
+    dof = [vec(Δ); vec(Ay)[Aydof]]
+    return SolveEilenberger.ΨDOF{PCHIP}(basis, dof, Aydof)    
+end
+
 Δhat(Ψ::ΨDOF{PCHIP}) = Ψ.dof[1:NDOF(basis(Ψ))]
 
 function Ayhat(Ψ::ΨDOF{PCHIP})

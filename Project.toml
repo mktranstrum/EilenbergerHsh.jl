@@ -4,5 +4,9 @@ authors = ["Mark Transtrum <mktranstrum@byu.edu>"]
 version = "0.1.0"
 
 [deps]
+Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
 FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 NLsolve = "2774e3e8-f4cf-5e23-947b-6d7e65073b56"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"

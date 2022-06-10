@@ -4,19 +4,30 @@ using Main.GalerkinBases
 using Main.SolveEilenberger
 
 coarseknots = Knots(range(0, stop = 20, length = 11);)
-knots = refine_knots(coarseknots, 4)
-fineknots = refine_knots(knots, 10)
+knots = refine_knots(coarseknots, 8)
 basis = PCHIPBasis(knots)
+fineknots = refine_knots(knots, 16)
+x = knots.x
+xfine = fineknots.x
+
+# Create ΔΨ's
+
+δΔ = PCHIP(coarseknots, zeros(2*length(coarseknots)))
+δΔ.pvalues[3] = 1
+δAy = PCHIP(coarseknots, zeros(2*length(coarseknots)))
+
+δΨ = ΨDOF(basis,
+          PCHIP(knots, δΔ),
+          PCHIP(knots, δAy))
+
+
 parameters = EilenbergerParameters(1.0, 0.9)
 parameters.Ha = 0.9 * parameters.Hc
 
-Ψ = ΨDOF(basis, parameters.ΔT)
-δΨ = ΨDOF(basis, parameters.ΔT)
-δΨ.dof .= 0
-δΨ.dof[1] = 1
+# Ψ = ΨDOF(basis, parameters.ΔT)
+# solve!(Ψ, parameters)
 
-solve!(Ψ, parameters)
-
+#=
 using LinearAlgebra
 n,i,j = 0, 1, 1
 Φ = ΦDOF(basis)
@@ -60,5 +71,5 @@ norm(df_fd.(fineknots.x) - df.(fineknots.x), Inf) = 2.1096591434863615e-12
 norm(dfb_fd.(fineknots.x) - dfb.(fineknots.x), Inf) = 2.815151266096748e-12
 norm(dg_fd.(fineknots.x) - dg.(fineknots.x), Inf) = 4.03148928473061e-12
 =#
-
+=#
 end # module
