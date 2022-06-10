@@ -12,6 +12,8 @@ Ay(Ψ::ΨDOF{T}) where T = T(Ψ.basis.knots, Ayhat(Ψ))
 MΔ(Ψ::ΨDOF) = sum(  Δhat(Ψ) .* basis(Ψ).M)
 MAy(Ψ::ΨDOF) = sum(  Ayhat(Ψ) .* basis(Ψ).M)
     
+δΨs(coarseknots::Knots, basis::GalerkinBasis{T}) where T = MethodError(δΨs, (coarseknots, basis)) |> throw
+
 ################################################################################
 # PCHIP Implementation
 ################################################################################
@@ -41,4 +43,23 @@ function Ayhat(Ψ::ΨDOF{PCHIP})
     out[Ψ.Aydof] = Ψ.dof[NDOF(basis(Ψ))+1:end]
     out[end-1] = 0
     return out
+end
+
+# convenience function to create a vector of zeros with a one in spot i
+function zeros_one(n, i)
+    out = zeros(n)
+    out[i] = 1
+    return out
+end
+
+function δΨs(coarseknots::Knots, basis::PCHIPBasis)
+    knots = basis.knots
+    n = 2*length(coarseknots)
+    Δdof = trues(n)
+    Aydof = trues(n)
+    Aydof[end-1] = false
+    PCHIPzero = PCHIP(knots, zeros(2*length(knots)))
+
+    return [[ΨDOF(basis, PCHIP(knots, PCHIP(coarseknots, zeros_one(n,i))), PCHIPzero) for i = 1:n if Δdof[i]];
+            [ΨDOF(basis, PCHIPzero, PCHIP(knots, PCHIP(coarseknots, zeros_one(n,i)))) for i = 1:n if Aydof[i]]]
 end
